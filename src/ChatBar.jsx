@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 
 class ChatBar extends Component {
   constructor(props) {
@@ -10,18 +10,25 @@ class ChatBar extends Component {
   }
 
   render() {
-    return(
+    return (
       <footer className="chatbar">
+        <input
+          onChange={this.props.userOnChange}
+          onKeyPress={this.props.submitUser}
+          defaultValue={this.props.currentUser}
+          className="chatbar-username"
+          placeholder="Your Name (Optional)"
+        />
 
-        <input onChange={this.props.userOnChange} 
-        onKeyPress = {this.props.submitUser} defaultValue ={this.props.currentUser} className="chatbar-username"/>
-
-        <input  onChange={this.props.messageOnChange} 
-        onKeyPress = {this.props.submitMessage} className="chatbar-message" />
-
+        <input
+          onChange={this.props.messageOnChange}
+          onKeyPress={this.props.submitMessage}
+          className="chatbar-message"
+          placeholder="Type a message and hit ENTER"
+        />
       </footer>
-    )
+    );
   }
 }
 
-export default ChatBar
+export default ChatBar;
