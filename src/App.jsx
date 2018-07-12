@@ -8,32 +8,34 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: {name: 'Bob'},
+      currentUser: {name: 'Anonymous'},
       messages: []
     };
     this.addMessage = this.addMessage.bind(this);
-  }
-
-  componentDidMount() {
     this.socket = new WebSocket('ws://localhost:3001');
     this.socket.addEventListener("message", this.receiveMessage);
   }
-  
+
   addMessage = (message, curUser) => {
-    const oldMessages = this.state.messages;
-    const loggedInUser = this.state.currentUser.name;
-    const messageInput = {
-      // id: oldMessages.length + 1,
-      username: curUser,
-      content: message
+    if (message !== undefined) {
+      const messageInput = {
+        type: "postMessage",
+        username: curUser,
+        content: message
+      }
+      this.socket.send(JSON.stringify(messageInput))
     }
-    const newMessages = [...oldMessages, messageInput]
-    this.setState({ messages: newMessages })
-    this.socket.send(JSON.stringify(messageInput))
   }
 
   addUser = user => {
-    this.setState({currentUser: {name: user}});
+    if (user === undefined || user === "") user = "Anonymous"
+    const loggedInUser = this.state.currentUser.name;
+    const messageInput = {
+      type: "postNotification",
+      content: `${loggedInUser} has changed their name to ${user}.`
+    }
+    this.setState({currentUser:{name:user}})
+    this.socket.send(JSON.stringify(messageInput))
   }
 
   userOnChange = evt => {

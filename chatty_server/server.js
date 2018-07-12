@@ -16,23 +16,37 @@ const wss = new WebSocket({
   server
 });
 
-// Set up a callback that will run when a client connects to the server 
-// When a client connects they are assigned a socket, represented by
-// the ws parameter in the callback.
-
+const sendMessageToClients = (msg) => {
+  wss.clients.forEach((client) => {
+    if (client.readyState === 1) {
+      console.log("message out:", JSON.stringify(msg))
+      client.send(JSON.stringify(msg));
+    }
+  });
+}
 
 wss.on('connection', (ws) => {
   console.log("Client connected")
+
   ws.on('message', (data) => {
     const msg = JSON.parse(data)
-    msg.id = uuidv1()
-    console.log(msg);
-    // Broadcast to everyone else.
-    wss.clients.forEach((client) => {
-      if (client !== ws && client.readyState === 1) {
-        client.send(JSON.stringify(msg));
-      }
-    });
+    console.log("incoming data:", JSON.parse(data))
+    switch(msg.type) {
+      case "postMessage":
+        msg.id = uuidv1();
+        msg.type = "incomingMessage";
+        sendMessageToClients(msg)
+        break;
+      case "postNotification":
+        msg.type = "incomingNotification";
+        sendMessageToClients(msg)
+        break;
+      default:
+        // show an error in the console if the message type is unknown
+        throw new Error("Unknown event type " + msg.type);
+    }
   });
+  
   ws.on('close', () => console.log('Client disconnected'));
 });
+
