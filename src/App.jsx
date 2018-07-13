@@ -7,9 +7,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: { name: "Anonymous" },
+      currentUser: { name: "Anonymous", color: "" },
       messages: [],
-      usersOnline: undefined
+      usersOnline: 0
     };
     this.addMessage = this.addMessage.bind(this);
     this.socket = new WebSocket("ws://localhost:3001");
@@ -20,8 +20,9 @@ class App extends Component {
     if (message !== undefined) {
       const messageInput = {
         type: "postMessage",
-        username: curUser,
-        content: message
+        username: curUser.name,
+        color: curUser.color,
+        content: message,
       };
       this.socket.send(JSON.stringify(messageInput));
     }
@@ -34,7 +35,7 @@ class App extends Component {
       type: "postNotification",
       content: `${loggedInUser} has changed their name to ${user}.`
     };
-    this.setState({ currentUser: { name: user } });
+    this.setState({ currentUser: { name: user, color: this.state.currentUser.color } });
     this.socket.send(JSON.stringify(messageInput));
   };
 
@@ -48,8 +49,9 @@ class App extends Component {
 
   submitMessage = evt => {
     if (evt.key == "Enter") {
-      this.addMessage(this.state.msgValue, this.state.currentUser.name);
+      this.addMessage(this.state.msgValue, this.state.currentUser);
       evt.target.value = "";
+      this.state.msgValue = undefined;
     }
   };
 
@@ -61,6 +63,7 @@ class App extends Component {
 
   receiveMessage = e => {
     const msg = JSON.parse(e.data);
+    console.log(msg)
     switch (msg.type) {
       case "incomingMessage":
       case "incomingNotification":
@@ -79,7 +82,10 @@ class App extends Component {
     return (
       <div>
         <NavBar usersOnline={this.state.usersOnline} />
-        <MessageList messages={this.state.messages} />
+        <MessageList
+          messages={this.state.messages}
+          color={this.state.currentUser.color}
+        />
         <ChatBar
           userOnChange={this.userOnChange}
           messageOnChange={this.messageOnChange}

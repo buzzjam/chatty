@@ -18,22 +18,35 @@ const wss = new WebSocket({
   server
 });
 
-const messageHandler = data => {
-  const msg = JSON.parse(data);
-  switch (msg.type) {
-    case "postMessage":
-      msg.id = uuidv1();
-      msg.type = "incomingMessage";
-      sendMessageToClients(msg);
-      break;
-    case "postNotification":
-      msg.type = "incomingNotification";
-      sendMessageToClients(msg);
-      break;
-    default:
-      throw new Error("Unknown event type " + msg.type);
+const colorArr = ["#1c1f9c", "#acf27f", "#bf7530", "#af9cc2"]
+
+
+
+const messageHandlerBuilder = (color) => {
+
+  return function (data) {
+    const msg = JSON.parse(data);
+    switch (msg.type) {
+      case "postMessage":
+        msg.id = uuidv1();
+        msg.type = "incomingMessage";
+        msg.color = color;
+        sendMessageToClients(msg);
+        break;
+      case "postNotification":
+        msg.type = "incomingNotification";
+        sendMessageToClients(msg);
+        break;
+      default:
+        throw new Error("Unknown event type " + msg.type);
+    }
   }
 };
+
+const getRandColor = () => {
+  return colorArr[Math.floor(Math.random() * 3)]
+}
+
 
 const sendMessageToClients = msg => {
   wss.clients.forEach(client => {
@@ -47,15 +60,16 @@ const updateUsersConnected = () => {
   let numUsers = wss.clients.size;
   const msg = {
     type: "usersChanged",
-    usersOnline: numUsers
+    usersOnline: numUsers,
   };
   sendMessageToClients(msg);
 };
 
 // web socket server actions
 wss.on("connection", ws => {
+  let clientColor = getRandColor();
   updateUsersConnected();
-  ws.on("message", messageHandler);
+  ws.on("message", messageHandlerBuilder(clientColor));
   ws.on("close", () => {
     updateUsersConnected();
   });

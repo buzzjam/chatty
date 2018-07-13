@@ -8,6 +8,7 @@ class MessageList extends Component {
       if (message.type === "incomingMessage") {
         return (
           <Message
+            color={message.color}
             message={message.content}
             key={index}
             username={message.username}
