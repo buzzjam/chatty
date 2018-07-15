@@ -1,11 +1,12 @@
-import React, { Component } from "react";
-import Message from "./Message.jsx";
-import Notification from "./Notification.jsx";
+import React, { Component } from 'react';
+import Message from './Message.jsx';
+import Notification from './Notification.jsx';
 
 class MessageList extends Component {
   render() {
     const allMessages = this.props.messages.map((message, index) => {
-      if (message.type === "incomingMessage") {
+      // maps solely the messages to display in the app
+      if (message.type === 'incomingMessage') {
         return (
           <Message
             color={message.color}

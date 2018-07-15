@@ -1,9 +1,9 @@
 h1 {
-  color: tomato;
+  color: linear-gradient(to bottom right, #0b8413, #32b6d1, #9530cc);
 }
 
 body {
-  background: white;
+  background: linear-gradient(to right, #ffccff 0%, #ffffff 100%);
   color: black;
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
@@ -11,7 +11,7 @@ body {
 }
 
 .chatbar {
-  background: tomato;
+  background: linear-gradient(to bottom right, #0b8413, #32b6d1, #9530cc);
   border-top: 1px solid black;
   bottom: 0;
   display: flex;
@@ -21,7 +21,8 @@ body {
   right: 0;
 }
 
-.chatbar-message, .chatbar-username {
+.chatbar-message,
+.chatbar-username {
   border: 1px solid black;
   display: block;
   height: 40px;
@@ -47,7 +48,8 @@ body {
   }
 }
 
-.message-content, .message-username {
+.message-content,
+.message-username {
   overflow: hidden;
   margin: 5px;
   padding: 0 10px;
@@ -63,7 +65,7 @@ body {
 }
 
 .navbar {
-  background: tomato;
+  background: linear-gradient(to bottom right, #0b8413, #32b6d1, #9530cc);
   border-bottom: 1px solid black;
   height: 60px;
   left: 0;

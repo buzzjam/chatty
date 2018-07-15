@@ -12,7 +12,11 @@ class App extends Component {
       usersOnline: 0
     };
     this.addMessage = this.addMessage.bind(this);
+
+    // connects websocket server
     this.socket = new WebSocket("ws://localhost:3001");
+    //listens for messages from the websocket server
+
     this.socket.addEventListener("message", this.receiveMessage);
   }
 
@@ -39,10 +43,12 @@ class App extends Component {
     this.socket.send(JSON.stringify(messageInput));
   };
 
+  // updates state based on user changes
   userOnChange = evt => {
     this.setState({ usernameValue: evt.target.value });
   };
-
+  
+   // updates state based on user changes
   messageOnChange = evt => {
     this.setState({ msgValue: evt.target.value });
   };
